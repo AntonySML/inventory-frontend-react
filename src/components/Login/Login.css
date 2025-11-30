@@ -1,0 +1,15 @@
+.card-login {
+    width: 250px;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid gray;
+    padding: 3rem 4rem 4rem 4rem;
+}
+
+.submit-button {
+    width: 200px;
+}

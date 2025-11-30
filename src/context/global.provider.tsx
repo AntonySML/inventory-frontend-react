@@ -1,16 +1,14 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type {
   AuthRequest,
-  AuthState,
   JwtPayload,
   LoginResponse,
   UserDTO,
 } from "../types/auth";
 import { jwtDecode } from "jwt-decode";
+import { AuthContext } from "./global.context";
 
 const apiUrl = "http://localhost:8080/api/v1";
-
-const AuthContext = createContext<AuthState>({} as AuthState);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -22,24 +20,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const loadToken = async () => {
-      try {
-        const tokenStorage = localStorage.getItem("token");
-        if(tokenStorage){
-          const decodedToken = jwtDecode<JwtPayload>(tokenStorage);
-          setToken(tokenStorage);
-          setUser({
-            id: decodedToken.id,
-            name: decodedToken.name,
-            email: decodedToken.sub,
-          });
-          setIsAuthenticated(true);
+      const tokenStorage = localStorage.getItem("token");
+    if(tokenStorage){
+        try {
+            const decodedToken = jwtDecode<JwtPayload>(tokenStorage);
+            
+            const currentTime = Date.now() / 1000;
+            
+            if(decodedToken.exp < currentTime){
+                localStorage.removeItem("token");
+                setIsAuthenticated(false);
+                return;
+            }
+            
+            setToken(tokenStorage);
+            setUser({
+              id: decodedToken.id,
+              name: decodedToken.name,
+              email: decodedToken.sub,
+            });
+            setIsAuthenticated(true);
+            
+        } catch (e) {
+            console.error("Error al decodificar el token, será eliminado.", e);
+            localStorage.removeItem("token");
+            setIsAuthenticated(false);
+        } finally {
+            setIsLoading(false);
         }
-      } catch (e) {
-        console.error("Error al cargar/decodificar el token:", e);
-        localStorage.removeItem("token");// Limpiar token inválido
-      } finally {
+    } else {
         setIsLoading(false);
-      }
+    }
     }
     loadToken();
   }, []);
@@ -93,6 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setToken(null);
       setUser(null);
       localStorage.clear();
+      setIsAuthenticated(false);
     } catch (e) {
       console.error("Error al eliminar el token:", e);
     }
@@ -105,12 +117,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe ser usado dentro de un AuthProvider");
-  }
-  return context;
 };

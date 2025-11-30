@@ -1,6 +1,7 @@
 import { Controller, type Control, type FieldError } from "react-hook-form";
-import "./CustomInput.css"
+import "./CustomInput.css";
 import type { FormValues } from "../models";
+import TextField from "@mui/material/TextField";
 
 interface Props {
   name: keyof FormValues;
@@ -13,20 +14,21 @@ interface Props {
 export const CustomInput = ({ name, control, label, type, error }: Props) => {
   return (
     <div className="form-group">
-      <label htmlFor={name}>{label}</label>
       <Controller
         name={name}
         control={control}
         render={({ field }) => (
-          <input
+          <TextField
             id={name}
+            label={label}
             type={type}
+            variant="outlined"
+            error={!!error}
+            helperText= {error ? error.message : ''}
             {...field}
-            className={`form-control ${error ? "is-invalid" : ""}`}
           />
         )}
       />
-      {error && <p className="error">{error.message}</p>}
     </div>
   );
 };

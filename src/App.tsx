@@ -2,12 +2,13 @@ import "./App.css";
 import { AppRouter } from "./AppRouter";
 import { AuthProvider } from "@/context/global.provider";
 import { useAuth } from "./context/global.context";
+import CircularProgress from '@mui/material/CircularProgress';
 
 function AppContent() {
   const { isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="loading-screen">Cargando datos de sesión...</div>;
+    return <CircularProgress size="3rem" />;
   }
 
   return <AppRouter />;

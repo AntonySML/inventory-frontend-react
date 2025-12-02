@@ -1,11 +1,11 @@
 import { useAuth } from "@/context/global.context";
-import Button from "@mui/material/Button";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../Navbar/Navbar";
+import { ProductList } from "../Product/ProductList";
 
 export const Dashboard = () => {
-  const { logout, isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,11 +17,7 @@ export const Dashboard = () => {
   return (
     <>
       <Navbar />
-      <h2>Hola, {user?.name}</h2>
-      <h1>Esto es el Dashboard</h1>
-      <Button onClick={logout} variant="contained">
-        LOG OUT
-      </Button>
+      <ProductList />
     </>
   );
 };

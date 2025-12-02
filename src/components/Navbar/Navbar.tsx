@@ -89,7 +89,7 @@ export const Navbar = () => {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
                 <MenuItem key="products" onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>Products</Typography>
+                  <Typography sx={{ textAlign: 'center' }}>Home</Typography>
                 </MenuItem>
             </Menu>
           </Box>
@@ -116,7 +116,7 @@ export const Navbar = () => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                Products
+                Home
               </Button>
           </Box>
           <Box sx={{ flexGrow: 0 }}>

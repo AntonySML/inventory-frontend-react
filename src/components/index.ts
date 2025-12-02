@@ -1,3 +1,6 @@
 export * from "./Dashboard/Dashboard.tsx"
 export * from "./Login/Login.tsx"
 export * from "./Navbar/Navbar.tsx"
+export * from "./Product/ProductList.tsx"
+export * from "./DataTable/DataTable.tsx"
+export * from "./DataTableCheck/DataTableCheck.tsx"

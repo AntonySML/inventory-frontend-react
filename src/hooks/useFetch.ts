@@ -7,24 +7,24 @@ interface Params<T> {
   data: Data<T>;
   loading: boolean;
   error: ErrorType;
-  fetchData: () => Promise<() => void>;
+  fetchData: (url: string, options: ApiOptions) => Promise<() => void>;
 }
 
 const apiUrl = "http://localhost:8080/api/v1";
 
 interface ApiOptions {
-  method?: "GET" | "POST" | "PATCH" | "DELETE";
+  method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   body?: Record<string, unknown>;
   token: string;
 }
 
-export const useFetch = <T>(url: string, options: ApiOptions): Params<T> => {
+export const useFetch = <T>(): Params<T> => {
   const [data, setData] = useState<Data<T>>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorType>(null);
-  const { method = "GET", body, token } = options;
-
-  const fetchData = useCallback(async () => {
+  
+  const fetchData = useCallback(async (url: string, options: ApiOptions) => {
+    const { method = "GET", body, token } = options;
     const controller = new AbortController();
     setLoading(true);
     try {
@@ -53,7 +53,8 @@ export const useFetch = <T>(url: string, options: ApiOptions): Params<T> => {
     return () => {
       controller.abort();
     };
-  }, [url, method, body, token]);
+  }, []);
 
   return { data, loading, error, fetchData };
 };
+

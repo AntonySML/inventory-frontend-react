@@ -8,7 +8,7 @@ import type {
 import { jwtDecode } from "jwt-decode";
 import { AuthContext } from "./global.context";
 
-const apiUrl = "http://localhost:8080/api/v1";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

@@ -10,7 +10,7 @@ interface Params<T> {
   fetchData: (url: string, options: ApiOptions) => Promise<() => void>;
 }
 
-const apiUrl = "http://localhost:8080/api/v1";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface ApiOptions {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";

@@ -78,3 +78,7 @@ This project is structured around the principle of **Separation of Concerns** us
 | :--- | :--- |
 | **Email** | `[Your registered email]` |
 | **Password** | `[Your chosen password]` |
+
+## Related projects
+
+[Inventory - Backend - JAVA 21](https://github.com/AntonySML/inventory-backend-java-v2)

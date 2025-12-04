@@ -1,73 +1,80 @@
-# React + TypeScript + Vite
+# ⚛️ Polyglot Inventory - React Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The official frontend application for the Polyglot Inventory project. This single-page application (SPA) is built on the modern React/TypeScript stack and is designed to consume the secure Java/Spring Boot CORE Microservice.
 
-Currently, two official plugins are available:
+This repository highlights best practices in React architecture, state management (Context API), and schema-driven form validation.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 💡 Key Architectural Highlights
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+This project is structured around the principle of **Separation of Concerns** using React Hooks and Context for a highly scalable and testable architecture.
 
-## Expanding the ESLint configuration
+### 1. Global State Management (Context API)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* **AuthContext:** Centralized global store for **Authentication State** (`token`, `user`, `isAuthenticated`).
+* **JWT Persistence:** Uses `localStorage` to persist the JWT, maintaining the user session across page reloads.
+* **Modal Context:** Implements a global context (`ModalProvider`) using **React Portals** to manage dynamic modals (Create, Edit, Delete Confirmation) cleanly and accessibly.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 2. Data and Business Logic Layer
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* **`useFetch` (Generic Hook):** Serves as the global HTTP client. It automatically injects the Bearer **JWT** from the `AuthContext` into every request, centralizes loading/error states, and manages asynchronous request cancellation (`AbortController`).
+* **`useProducts` (Service Hook):** Implements the specific business logic for the Products domain (calling the generic `useFetch` with the correct endpoints) and exposes the full CRUD mutation functions (`createProduct`, `updateProduct`, `deleteProduct`).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 3. Forms and Validation
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+* **Library Stack:** Uses **React Hook Form** for form management and **Zod** (via `@hookform/resolvers`) for schema-driven validation.
+* **Benefit:** Decouples form behavior from component logic, ensuring fields are validated against strict, shared TypeScript schemas before any API call.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 4. UI/Design
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* **Component Library:** **Material UI (MUI)** for professional, high-quality component design and styling.
+* **Reusable Components:** Implementation of a generic **`DataTable`** component that handles pagination and sorting, consuming generic types (`<T>`) to display any collection data.
+* **Protected Routing:** Uses **React Router DOM** and a custom **`PrivateGuard`** component to ensure users without a valid token are always redirected to the login page.
+
+---
+
+## ⚙️ Features (Current MVP)
+
+| Feature | Method | Path |
+| :--- | :--- | :--- |
+| User Login | `POST` | `/api/v1/auth/login` |
+| Get User Profile | `GET` | `/api/v1/users/me` |
+| List Inventory | `GET` | `/api/v1/products` |
+| Create Product | `POST` | `/api/v1/products` (via Modal Form) |
+| Edit Product | `PUT` | `/api/v1/products/{id}` (Partial Update Logic) |
+| Delete Product | `DELETE` | `/api/v1/products/{id}` |
+
+---
+
+## 🏁 Local Setup and Execution
+
+### Prerequisites
+
+1.  **Java Backend:** The [Inventory - Backend - JAVA 21](https://github.com/AntonySML/inventory-backend-java-v2) microservice must be running on **`http://localhost:8080`**.
+2.  **CORS:** The Java backend's `WebConfig.java` must allow requests from `http://localhost:5173`.
+
+### Steps
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone [URL_DEL_REPO]
+    ```
+
+2.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Run the Application:**
+    ```bash
+    npm run dev
+    ```
+    (The application will open on `http://localhost:5173`.)
+
+### Testing Credentials
+
+| Field | Value |
+| :--- | :--- |
+| **Email** | `[Your registered email]` |
+| **Password** | `[Your chosen password]` |

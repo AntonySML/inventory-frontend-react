@@ -1,8 +1,8 @@
 import "./Login.css";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { schema, type FormValues } from "./models";
+import { schema, type LoginFormValues } from "./models";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CustomInput } from "./components";
+import { CustomInput } from "../CustomInput";
 import { useAuth } from "@/context/global.context";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ export const Login = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>({
+  } = useForm<LoginFormValues>({
     resolver: zodResolver(schema),
     mode: "onBlur",
     defaultValues: {
@@ -25,10 +25,10 @@ export const Login = () => {
     },
   });
 
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     try {
       await login(data);
     } catch (err) {
@@ -45,44 +45,48 @@ export const Login = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <Container className="login-container">
-      <div className="card-login">
-        <AdbIcon sx={{ display: "flex" }} />
-        <Typography
-          variant="h6"
-          noWrap
-          sx={{
-            mb: 4,
-            display: "flex",
-            fontFamily: "monospace",
-            fontWeight: 700,
-            letterSpacing: ".3rem",
-            color: "inherit",
-            textDecoration: "none",
-          }}
-        >
-          LOGO
-        </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CustomInput
-            name="email"
-            control={control}
-            label="Email"
-            type="text"
-            error={errors.email}
-          />
-          <CustomInput
-            name="password"
-            control={control}
-            label="Password"
-            type="password"
-            error={errors.password}
-          />
-          <Button variant="contained" className="submit-button" type="submit">
-            LOGIN
-          </Button>
-        </form>
-      </div>
-    </Container>
+    <>
+      {!isLoading && !isAuthenticated && (
+        <Container className="login-container">
+          <div className="card-login">
+            <AdbIcon sx={{ display: "flex" }} />
+            <Typography
+              variant="h6"
+              noWrap
+              sx={{
+                mb: 4,
+                display: "flex",
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              LOGO
+            </Typography>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <CustomInput
+                name="email"
+                control={control}
+                label="Email"
+                type="text"
+                error={errors.email}
+              />
+              <CustomInput
+                name="password"
+                control={control}
+                label="Password"
+                type="password"
+                error={errors.password}
+              />
+              <Button sx={{width: '220px'}} variant="contained" type="submit">
+                LOGIN
+              </Button>
+            </form>
+          </div>
+        </Container>
+      )}
+    </>
   );
 };

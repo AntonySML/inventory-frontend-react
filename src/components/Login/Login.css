@@ -9,7 +9,7 @@
 }
 
 .card-login {
-    width: 250px;
+    min-width: 250px;
     min-height: 250px;
     display: flex;
     flex-direction: column;
@@ -19,8 +19,4 @@
     border: 1px solid gray; 
     padding: 3rem 4rem 4rem 4rem;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-.submit-button {
-    width: 210px;
 }

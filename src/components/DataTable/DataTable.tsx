@@ -15,6 +15,10 @@ import Paper from "@mui/material/Paper";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { visuallyHidden } from "@mui/utils";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+
 
 export interface HeadCell<T> {
   disablePadding: boolean;
@@ -91,6 +95,13 @@ function EnhancedTableHead<T>(props: EnhancedTableHeadProps<T>) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell
+            key={"actions"}
+            align={"center"}
+            padding={"normal"}
+          >
+            Actions
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -112,7 +123,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       ]}
     >
         <Typography
-          sx={{ flex: "1 1 100%" }}
+          sx={{ flex: "1 1 100%", fontWeight: 'bold', color: '#1976d2' }}
           variant="h6"
           id="tableTitle"
           component="div"
@@ -123,11 +134,21 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   );
 }
 
+const defaultAction = <T,>( row: T)  => {
+  console.log('Action on row', row);
+}
+
 interface EnhancedTableProps<T> {
   rows: T[];
   headCells: HeadCell<T>[];
   title?: string;
   initialOrderBy?: keyof T;
+  withShow?: boolean;
+  showAction?: (row: T) => void;
+  withEdit?: boolean;
+  editAction?: (row: T) => void;
+  withDelete?: boolean;
+  deleteAction?: (row: T) => void;
 }
 
 export const DataTable = <T extends { id: number | string }>({
@@ -135,6 +156,12 @@ export const DataTable = <T extends { id: number | string }>({
   headCells,
   title = "Table",
   initialOrderBy,
+  withShow,
+  showAction = defaultAction,
+  withEdit,
+  editAction = defaultAction,
+  withDelete,
+  deleteAction = defaultAction,
 }: EnhancedTableProps<T>) => {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof T>(
@@ -181,7 +208,7 @@ export const DataTable = <T extends { id: number | string }>({
   );
 
   return (
-    <Box sx={{ width: "100%", marginTop: "2rem" }}>
+    <Box sx={{ width: "100%", marginTop: "1rem" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar title={title} />
         <TableContainer>
@@ -209,7 +236,7 @@ export const DataTable = <T extends { id: number | string }>({
                   >
                     {headCells.map((cell, cellIndex) => {
                       const cellValue = row[cell.id];
-
+                      
                       if (cellIndex === 0) {
                         return (
                           <TableCell
@@ -232,6 +259,16 @@ export const DataTable = <T extends { id: number | string }>({
                         </TableCell>
                       );
                     })}
+                    <TableCell
+                        key={`actions-${row.id}`}
+                        align={"center"}
+                      >
+                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+                          {withShow && <SearchOutlinedIcon onClick={() => showAction(row)} sx={{ color: '#1976d2', cursor: 'pointer' }} />}
+                          {withEdit && <EditOutlinedIcon onClick={() => editAction(row)} sx={{ color: '#1976d2', cursor: 'pointer' }} />}
+                          {withDelete && <DeleteOutlinedIcon onClick={() => deleteAction(row)} sx={{ color: '#d32f2f', cursor: 'pointer' }} />}
+                        </Box>
+                      </TableCell>
                   </TableRow>
                 );
               })}
@@ -250,7 +287,7 @@ export const DataTable = <T extends { id: number | string }>({
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={rows.length} 
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

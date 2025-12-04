@@ -8,4 +8,4 @@ export const schema = z
       .min(6, "La contraseña debe tener al menos 6 caracteres"),
   });
 
-export type FormValues = z.infer<typeof schema>;
+export type LoginFormValues = z.infer<typeof schema>;
